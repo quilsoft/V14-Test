@@ -1,0 +1,4 @@
+[submodule "quilsoft-org/business-requirement"]
+	path = quilsoft-org/business-requirement
+	url = git@github.com:quilsoft-org/business-requirement
+	branch = 14.0
