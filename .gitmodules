@@ -1,0 +1,16 @@
+[submodule "odoo-argentina-ee"]
+	path = odoo-argentina-ee
+	url = https://github.com/quilsoft-org/odoo-argentina-ee.git
+	branch = 14.0
+[submodule "account-payment"]
+	path = account-payment
+	url = https://github.com/quilsoft-org/account-payment.git
+	branch = 14.0
+[submodule "odoo-argentina"]
+	path = odoo-argentina
+	url = https://github.com/quilsoft-org/odoo-argentina.git
+	branch = 14.0
+[submodule "account-financial-tools"]
+	path = account-financial-tools
+	url = https://github.com/quilsoft-org/account-financial-tools.git
+	branch = 14.0
