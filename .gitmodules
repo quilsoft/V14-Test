@@ -1,8 +1,6 @@
-<<<<<<< HEAD
 [submodule "quilsoft-org/business-requirement"]
 	path = quilsoft-org/business-requirement
 	url = git@github.com:quilsoft-org/business-requirement
-=======
 [submodule "odoo-argentina-ee"]
 	path = odoo-argentina-ee
 	url = https://github.com/quilsoft-org/odoo-argentina-ee.git
@@ -18,5 +16,4 @@
 [submodule "account-financial-tools"]
 	path = account-financial-tools
 	url = https://github.com/quilsoft-org/account-financial-tools.git
->>>>>>> 3ef6d90f6b55522e065ad9d9b39c54231fec6350
 	branch = 14.0
