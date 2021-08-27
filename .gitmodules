@@ -1,6 +1,3 @@
-[submodule "quilsoft-org/business-requirement"]
-	path = quilsoft-org/business-requirement
-	url = git@github.com:quilsoft-org/business-requirement
 [submodule "odoo-argentina-ee"]
 	path = odoo-argentina-ee
 	url = https://github.com/quilsoft-org/odoo-argentina-ee.git
