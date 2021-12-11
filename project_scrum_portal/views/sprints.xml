@@ -1,0 +1,1097 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="my_sprints" name="My Sprints">
+        <t t-call="website.layout">
+            <div id="wrap" class="o_portal_wrap" style="background: #e8ebef;">
+                <div class="container-fluid">
+                    <nav class="navbar navbar-light navbar-expand-lg border py-0 mb-2 o_portal_navbar  mt-3 rounded">
+                    <ol class="o_portal_submenu breadcrumb mb-0 py-2 flex-grow-1" style="background:#ffffff;">
+                        <li class="breadcrumb-item">
+                            <a t-att-href="'/my/home'+project_val">
+                                <i class="fa fa-home"/>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active">Sprint Planning</li>
+                    </ol>
+                    </nav>
+                    <section class="sprint_sec">
+                        <div class="kanban-container-fluid">
+                            <div id="sortableKanbanBoards" class="row">
+                                <div class="panel kanban-col"
+                                     style="border-right:1px solid #f5f5f5;">
+                                    <div class="panel-heading"
+                                         style="color: #6a6c6f; background: #d5dce4; padding-left: 25px; min-height: 50px;">
+                                        <span>Backlog</span>
+                                        <i class="fa fa-plus-circle pull-right mr16 mt16"></i>
+                                    </div>
+                                    <div class="panel-body"
+                                         style="max-height: auto !important; padding-left: 12px;">
+                                        <div class="kanban-centered">
+                                            <t t-if="not product_backlog">
+                                                <div class="alert alert-warning mt8"
+                                                     role="alert">
+                                                    No data found !
+                                                </div>
+                                            </t>
+                                            <t t-foreach="product_backlog"
+                                               t-as="backlog">
+                                                <article
+                                                        class="kanban-entry grab"
+                                                        t-att-id="backlog.id"
+                                                        draggable="true">
+                                                    <a data-toggle="modal"
+                                                       t-att-href="'#modal_sprint_task'+str(backlog.id)"
+                                                       class="kanban-centered"
+                                                       t-att-id="backlog.id">
+                                                        <div class="kanban-entry-inner">
+                                                            <div class="kanban-label">
+                                                                <strong>
+                                                                    <span t-field="backlog.name"/>
+                                                                </strong>
+                                                                <div>
+                                                                    <small>[<t
+                                                                            t-esc="backlog.backlog_number"/>
+                                                                        ]
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </article>
+                                                <div class="modal fade modal-fullscreen footer-to-bottom"
+                                                     t-att-id="'modal_sprint_task'+str(backlog.id)"
+                                                     role="dialog">
+                                                    <div class="modal-dialog" style="max-width: initial !important;">
+                                                        <!-- Modal content-->
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button"
+                                                                        class="close"
+                                                                        data-dismiss="modal">
+                                                                    <i class="fa fa-times-circle"/>
+                                                                </button>
+                                                                <h4 class="modal-title" style="position: absolute;">
+                                                                    <t t-esc="backlog.name"/>
+                                                                </h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div id="exTab1"
+                                                                     class="container-fluid">
+                                                                    <ul class="nav nav-pills">
+                                                                        <li class="active">
+                                                                            <a t-att-href="'#modal_data_sprint_task_details'+str(backlog.id)"
+                                                                               data-toggle="tab" style="position: relative; display: block; padding: 10px 15px;">
+                                                                                Details
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a t-att-href="'#modal_data_sprint_task_general'+str(backlog.id)"
+                                                                               data-toggle="tab" style="position: relative; display: block; padding: 10px 15px;">
+                                                                                General
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a t-att-href="'#modal_data_sprint_task_tasks'+str(backlog.id)"
+                                                                               data-toggle="tab" style="position: relative; display: block; padding: 10px 15px;">
+                                                                                Tasks
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a t-att-href="'#modal_data_sprint_task_notes'+str(backlog.id)"
+                                                                               data-toggle="tab" style="position: relative; display: block; padding: 10px 15px;">
+                                                                                Notes
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                    <div class="tab-content clearfix">
+                                                                        <div class="tab-pane active"
+                                                                             t-att-id="'modal_data_sprint_task_details'+str(backlog.id)">
+                                                                            <div class="mt32">
+                                                                                <h3 t-esc="backlog.backlog_number"></h3>
+                                                                                <form class="custom_common_form_class">
+                                                                                    <div class="form-group col-md-8">
+                                                                                        <label for="name">
+                                                                                            Name
+                                                                                        </label>
+                                                                                        <input type="name"
+                                                                                               class="form-control"
+                                                                                               name="name"
+                                                                                               placeholder="name"
+                                                                                               t-att-value="backlog.name"
+                                                                                               readonly="True"/>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-4">
+                                                                                        <label for="tags">
+                                                                                            Tags
+                                                                                            <span class="fa fa-tags"/>
+                                                                                        </label>
+                                                                                        <div>
+                                                                                            <p class="post-meta text-muted">
+                                                                                                <t t-foreach="backlog.categ_ids"
+                                                                                                   t-as="one_tag">
+                                                                                                    <a class="badge"
+                                                                                                       t-esc="one_tag.name"/>
+                                                                                                </t>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-12"
+                                                                                         style="padding-left:0; padding-right:0;">
+                                                                                        <div class="form-group col-md-4">
+                                                                                            <label for="project">
+                                                                                                Project
+                                                                                            </label>
+                                                                                            <select id="project_id"
+                                                                                                    name="project_id"
+                                                                                                    class="form-control"
+                                                                                                    readonly="True">
+                                                                                                <option t-esc="backlog.project_id.name"/>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="form-group col-md-4">
+                                                                                            <label for="release">
+                                                                                                Release
+                                                                                            </label>
+                                                                                            <select id="release_id"
+                                                                                                    name="release_id"
+                                                                                                    class="form-control">
+                                                                                                <option>
+                                                                                                    <t t-esc="backlog.release_id.name"/>
+                                                                                                </option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-8">
+                                                                                        <label for="sprint">
+                                                                                            Sprint
+                                                                                        </label>
+                                                                                        <select id="sprint_id"
+                                                                                                name="sprint_id"
+                                                                                                class="form-control">
+                                                                                            <option>
+                                                                                                [
+                                                                                                <t t-esc="backlog.sprint_id.sprint_number"/>
+                                                                                                ]
+                                                                                                <t t-esc="backlog.sprint_id.name"/>
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-4">
+                                                                                        <label for="author">
+                                                                                            Author
+                                                                                        </label>
+                                                                                        <select id="user_id"
+                                                                                                name="user_id"
+                                                                                                class="form-control">
+                                                                                            <option>
+                                                                                                <t t-esc="backlog.user_id.name"/>
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group date col-md-4">
+                                                                                        <label for="startdate">
+                                                                                            Start
+                                                                                            Date
+                                                                                        </label>
+                                                                                        <div class="date">
+                                                                                            <div class="input-group input-append date"
+                                                                                                 id="StartdatePicker">
+                                                                                                <input type="text"
+                                                                                                       class="form-control"
+                                                                                                       id="s_date"
+                                                                                                       name="date_open"
+                                                                                                       t-att-value="backlog.date_open"
+                                                                                                       readonly="True"/>
+                                                                                                <span class="input-group-addon add-on">
+                                                                                                    <span class="fa fa-calendar"></span>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- <script>
+                                                                                            $(document).ready(function()
+                                                                                            {
+                                                                                            $('#StartdatePicker')
+                                                                                            .datepicker({
+                                                                                            format:
+                                                                                            'yyyy-mm-dd'
+                                                                                            })
+                                                                                            });
+                                                                                        </script> -->
+                                                                                    </div>
+                                                                                    <div class="form-group date col-md-4">
+                                                                                        <label for="enddate">
+                                                                                            End
+                                                                                            Date
+                                                                                        </label>
+                                                                                        <div class="date">
+                                                                                            <div class="input-group input-append date"
+                                                                                                 id="EnddatePicker">
+                                                                                                <input type="text"
+                                                                                                       class="form-control"
+                                                                                                       id="e_date"
+                                                                                                       name="date_done"
+                                                                                                       t-att-value="backlog.date_done"
+                                                                                                       readonly="True"/>
+                                                                                                <span class="input-group-addon add-on">
+                                                                                                    <span class="fa fa-calendar"></span>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- <script>
+                                                                                            $(document).ready(function()
+                                                                                            {
+                                                                                            $('#EnddatePicker')
+                                                                                            .datepicker({
+                                                                                            format:
+                                                                                            'yyyy-mm-dd'
+                                                                                            })
+                                                                                            });
+                                                                                        </script> -->
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-4">
+                                                                                        <label for="author">
+                                                                                            Responsible
+                                                                                        </label>
+                                                                                        <select id="responsable_id"
+                                                                                                name="responsable_id"
+                                                                                                class="form-control">
+                                                                                            <option>
+                                                                                                <t t-esc="backlog.responsible_id.name"/>
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group date col-md-4">
+                                                                                        <label for="appdate">
+                                                                                            Application
+                                                                                            Date
+                                                                                        </label>
+                                                                                        <div class="date">
+                                                                                            <div class="input-group input-append date"
+                                                                                                 id="AskdatePicker">
+                                                                                                <input type="text"
+                                                                                                       class="form-control"
+                                                                                                       id="asked_date"
+                                                                                                       name="asked_done"
+                                                                                                       t-att-value="backlog.asked_date"
+                                                                                                       readonly="True"/>
+                                                                                                <span class="input-group-addon add-on">
+                                                                                                    <span class="fa fa-calendar"></span>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <!-- <script>
+                                                                                            $(document).ready(function()
+                                                                                            {
+                                                                                            $('#AskdatePicker')
+                                                                                            .datepicker({
+                                                                                            format:
+                                                                                            'yyyy-mm-dd'
+                                                                                            })
+                                                                                            });
+                                                                                        </script> -->
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-4">
+                                                                                        <label for="who">
+                                                                                            Who
+                                                                                        </label>
+                                                                                        <select id="role2_id"
+                                                                                                name="role2_id"
+                                                                                                class="form-control">
+                                                                                            <option>
+                                                                                                <t t-esc="backlog.role_job_id.name"/>
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-4">
+                                                                                        <label for="listener">
+                                                                                            Listener
+                                                                                        </label>
+                                                                                        <select id="role_id"
+                                                                                                name="role_id"
+                                                                                                class="form-control">
+                                                                                            <option>
+                                                                                                <t t-esc="backlog.role_id.name"/>
+                                                                                            </option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-8">
+                                                                                        <label for="wants">
+                                                                                            Wants
+                                                                                        </label>
+                                                                                        <textarea
+                                                                                                name="description"
+                                                                                                class="form-control"
+                                                                                                rows="1"
+                                                                                                readonly="True">
+                                                                                            <t t-esc="backlog.description"/>
+                                                                                        </textarea>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-8">
+                                                                                        <label for="for">
+                                                                                            For
+                                                                                        </label>
+                                                                                        <textarea
+                                                                                                name="for_then"
+                                                                                                class="form-control"
+                                                                                                rows="1"
+                                                                                                readonly="True">
+                                                                                            <t t-esc="backlog.for_then"/>
+                                                                                        </textarea>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-8">
+                                                                                        <label for="acceptance_testing">
+                                                                                            Proof
+                                                                                            of
+                                                                                            acceptance
+                                                                                        </label>
+                                                                                        <textarea
+                                                                                                name="acceptance_testing"
+                                                                                                class="form-control"
+                                                                                                rows="1"
+                                                                                                readonly="True">
+                                                                                            <t t-esc="backlog.acceptance_testing"/>
+                                                                                        </textarea>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="tab-pane"
+                                                                             t-att-id="'modal_data_sprint_task_general'+str(backlog.id)">
+                                                                            <div class="mt32">
+                                                                                <form class="form-row custom_common_form_class">
+                                                                                    <div class="form-group col-md-3">
+                                                                                        <label for="name">
+                                                                                            Story
+                                                                                            Points
+                                                                                        </label>
+                                                                                        <input type="integer"
+                                                                                               class="form-control"
+                                                                                               name="complexity"
+                                                                                               t-att-value="backlog.complexity"
+                                                                                               readonly="True"></input>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-3">
+                                                                                        <label for="name">
+                                                                                            Value
+                                                                                            for
+                                                                                            the
+                                                                                            user
+                                                                                        </label>
+                                                                                        <input type="integer"
+                                                                                               class="form-control"
+                                                                                               name="value_to_user"
+                                                                                               t-att-value="backlog.value_to_user"
+                                                                                               readonly="True"></input>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-3">
+                                                                                        <label for="name">
+                                                                                            Sequence
+                                                                                        </label>
+                                                                                        <input type="integer"
+                                                                                               class="form-control"
+                                                                                               name="sequence"
+                                                                                               t-att-value="backlog.sequence"
+                                                                                               readonly="True"></input>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-3">
+                                                                                        <label for="name">
+                                                                                            Progress
+                                                                                        </label>
+                                                                                        <input type="integer"
+                                                                                               class="form-control"
+                                                                                               name="progress"
+                                                                                               t-att-value="backlog.progress"
+                                                                                               readonly="True"></input>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-3">
+                                                                                        <label for="name">
+                                                                                            Planned
+                                                                                            Hours
+                                                                                        </label>
+                                                                                        <input type="integer"
+                                                                                               class="form-control"
+                                                                                               name="expected_hours"
+                                                                                               t-att-value="backlog.expected_hours"
+                                                                                               readonly="True"></input>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-3">
+                                                                                        <label for="name">
+                                                                                            Task
+                                                                                            Hours
+                                                                                        </label>
+                                                                                        <input type="integer"
+                                                                                               class="form-control"
+                                                                                               name="task_hours"
+                                                                                               t-att-value="backlog.task_hours"
+                                                                                               readonly="True"></input>
+                                                                                    </div>
+                                                                                    <div class="form-group col-md-3">
+                                                                                        <label for="name">
+                                                                                            Spent
+                                                                                            Hours
+                                                                                        </label>
+                                                                                        <input type="integer"
+                                                                                               class="form-control"
+                                                                                               name="spent_hours"
+                                                                                               t-att-value="backlog.effective_hours"
+                                                                                               readonly="True"></input>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="tab-pane"
+                                                                             t-att-id="'modal_data_sprint_task_tasks'+str(backlog.id)">
+                                                                            <div class="mt32">
+                                                                                <table class="table">
+                                                                                    <thead class="thead-dark">
+                                                                                        <tr class="task_tr">
+                                                                                            <th scope="col">
+                                                                                                Sequence
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Task
+                                                                                                Title
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Assigned
+                                                                                                to
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Initially
+                                                                                                Planned
+                                                                                                Hours
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Hours
+                                                                                                Spent
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Remaining
+                                                                                                Hours
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Total
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Deadline
+                                                                                            </th>
+                                                                                            <th scope="col">
+                                                                                                Stage
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <t t-foreach="backlog.tasks_id"
+                                                                                           t-as="task">
+                                                                                            <tr>
+                                                                                                <th scope="row">
+                                                                                                    <t t-esc="task.sequence"/>
+                                                                                                </th>
+                                                                                                <td>
+                                                                                                    <t t-esc="task.name"/>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <t t-esc="task.user_id.name"/>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <t t-esc="task.planned_hours"/>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <t t-esc="task.effective_hours"/>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <t t-esc="task.remaining_hours"/>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <t t-esc="task.date_deadline"/>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <t t-esc="task.stage_id.name"/>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </t>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="tab-pane"
+                                                                             t-att-id="'modal_data_sprint_task_notes'+str(backlog.id)">
+                                                                            <div class="mt32">
+                                                                                <textarea
+                                                                                        name="note"
+                                                                                        class="form-control"
+                                                                                        rows="2">
+                                                                                    <t t-esc="backlog.note"/>
+                                                                                </textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                                <t t-if="sprints_kanban">
+                                    <t t-foreach="sprints_kanban" t-as="t">
+                                        <div class="panel kanban-col"
+                                             style="border-right:1px solid #f5f5f5;">
+                                            <div class="panel-heading"
+                                                 style="color: #6a6c6f; background: #d5dce4;">
+                                                <span t-esc="t.get('stage')"/>
+                                                <i class="fa fa-plus-circle pull-right mt16 mr16"></i>
+                                                <div class="mt8">
+                                                    <small>
+                                                        <span class="badge"
+                                                              t-esc="t.get('state')"/>
+                                                        <span>
+                                                            <t t-esc="t.get('start_date')"/>
+                                                            to
+                                                            <t t-esc="t.get('end_date')"/>
+                                                        </span>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body"
+                                                 style="max-height: auto !important;">
+                                                <div t-att-id="t.get('stage_id')"
+                                                     class="kanban-centered">
+                                                    <t t-set="stage"
+                                                       t-value="request.env['project.scrum.product.backlog'].sudo().search([('sprint_id','=',t.get('stage_id')),('project_id.id','=',request.params.get('project'))])"/>
+                                                    <t t-if="not stage">
+                                                        <div class="alert alert-warning mt8"
+                                                             role="alert">
+                                                            No data found !
+                                                        </div>
+                                                    </t>
+                                                    <t t-foreach="stage"
+                                                       t-as="s">
+                                                        <article
+                                                                class="kanban-entry grab"
+                                                                t-att-id="s.id"
+                                                                draggable="true">
+                                                            <a data-toggle="modal"
+                                                               t-att-href="'#modal_sprint_task'+str(s.id)"
+                                                               class="kanban-centered"
+                                                               t-att-id="s.id">
+                                                                <div class="kanban-entry-inner">
+                                                                    <div class="kanban-label">
+                                                                        <strong>
+                                                                            <span t-field="s.name"/>
+                                                                        </strong>
+                                                                        <div>
+                                                                            <small>
+                                                                                [
+                                                                                <t t-esc="s.backlog_number"/>
+                                                                                ]
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </article>
+                                                        <div class="modal fade modal-fullscreen modal_sprints1 footer-to-bottom"
+                                                             t-att-id="'modal_sprint_task'+str(s.id)"
+                                                             role="dialog">
+                                                            <div class="modal-dialog" style="max-width: initial !important;">
+                                                                <!-- Modal content-->
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button"
+                                                                                class="close"
+                                                                                data-dismiss="modal">
+                                                                            <i class="fa fa-times-circle"/>
+                                                                        </button>
+                                                                        <h4 class="modal-title">
+                                                                            <t t-esc="s.name"/>
+                                                                        </h4>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div id="exTab1"
+                                                                             class="container-fluid">
+                                                                            <ul class="nav nav-pills">
+                                                                                <li class="">
+                                                                                    <a style="position: relative;display: block;padding: 10px 15px;" t-att-href="'#modal_data_sprint_task_details'+str(s.id)"
+                                                                                       data-toggle="tab">
+                                                                                        Details
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a style="position: relative;display: block;padding: 10px 15px;" t-att-href="'#modal_data_sprint_task_general'+str(s.id)"
+                                                                                       data-toggle="tab">
+                                                                                        General
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a style="position: relative;display: block;padding: 10px 15px;" t-att-href="'#modal_data_sprint_task_tasks'+str(s.id)"
+                                                                                       data-toggle="tab">
+                                                                                        Tasks
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a style="position: relative;display: block;padding: 10px 15px;" t-att-href="'#modal_data_sprint_task_notes'+str(s.id)"
+                                                                                       data-toggle="tab">
+                                                                                        Notes
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                            <div class="tab-content clearfix">
+                                                                                <div class="tab-pane active"
+                                                                                     t-att-id="'modal_data_sprint_task_details'+str(s.id)">
+                                                                                    <div class="mt32">
+                                                                                        <h3 t-esc="s.backlog_number"></h3>
+                                                                                        <form class="form-row custom_common_form_class">
+                                                                                            <div class="form-group col-md-8">
+                                                                                                <label for="name">
+                                                                                                    Name
+                                                                                                </label>
+                                                                                                <input type="name"
+                                                                                                       class="form-control"
+                                                                                                       name="name"
+                                                                                                       placeholder="name"
+                                                                                                       t-att-value="s.name"
+                                                                                                       readonly="True"/>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-4">
+                                                                                                <label for="tags">
+                                                                                                    Tags
+                                                                                                    <span class="fa fa-tags"/>
+                                                                                                </label>
+                                                                                                <div>
+                                                                                                    <p class="post-meta text-muted">
+                                                                                                        <t t-foreach="s.categ_ids"
+                                                                                                           t-as="one_tag">
+                                                                                                            <a class="badge"
+                                                                                                               t-esc="one_tag.name"/>
+                                                                                                        </t>
+                                                                                                    </p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-row col-md-12"
+                                                                                                 style="padding-left:0; padding-right:0;">
+                                                                                                <div class="form-group col-md-4">
+                                                                                                    <label for="project">
+                                                                                                        Project
+                                                                                                    </label>
+                                                                                                    <select id="project_id"
+                                                                                                            name="project_id"
+                                                                                                            class="form-control"
+                                                                                                            readonly="True">
+                                                                                                        <option t-esc="s.project_id.name"/>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                                <div class="form-group col-md-4">
+                                                                                                    <label for="release">
+                                                                                                        Release
+                                                                                                    </label>
+                                                                                                    <select id="release_id"
+                                                                                                            name="release_id"
+                                                                                                            class="form-control">
+                                                                                                        <option>
+                                                                                                            <t t-esc="s.release_id.name"/>
+                                                                                                        </option>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-8">
+                                                                                                <label for="sprint">
+                                                                                                    Sprint
+                                                                                                </label>
+                                                                                                <select id="sprint_id"
+                                                                                                        name="sprint_id"
+                                                                                                        class="form-control">
+                                                                                                    <option>
+                                                                                                        [
+                                                                                                        <t t-esc="s.sprint_id.sprint_number"/>
+                                                                                                        ]
+                                                                                                        <t t-esc="s.sprint_id.name"/>
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-4">
+                                                                                                <label for="author">
+                                                                                                    Author
+                                                                                                </label>
+                                                                                                <select id="user_id"
+                                                                                                        name="user_id"
+                                                                                                        class="form-control">
+                                                                                                    <option>
+                                                                                                        <t t-esc="s.user_id.name"/>
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="form-group date col-md-4">
+                                                                                                <label for="startdate">
+                                                                                                    Start
+                                                                                                    Date
+                                                                                                </label>
+                                                                                                <div class="date">
+                                                                                                    <div class="input-group input-append date"
+                                                                                                         id="StartdatePicker">
+                                                                                                        <input type="text"
+                                                                                                               class="form-control"
+                                                                                                               id="s_date"
+                                                                                                               name="date_open"
+                                                                                                               t-att-value="s.date_open"
+                                                                                                               readonly="True"/>
+                                                                                                        <span class="input-group-addon add-on">
+                                                                                                            <span class="fa fa-calendar"></span>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <!-- <script>
+                                                                                                    $(document).ready(function()
+                                                                                                    {
+                                                                                                    $('#StartdatePicker')
+                                                                                                    .datepicker({
+                                                                                                    format:
+                                                                                                    'yyyy-mm-dd'
+                                                                                                    })
+                                                                                                    });
+                                                                                                </script> -->
+                                                                                            </div>
+                                                                                            <div class="form-group date col-md-4">
+                                                                                                <label for="enddate">
+                                                                                                    End
+                                                                                                    Date
+                                                                                                </label>
+                                                                                                <div class="date">
+                                                                                                    <div class="input-group input-append date"
+                                                                                                         id="EnddatePicker">
+                                                                                                        <input type="text"
+                                                                                                               class="form-control"
+                                                                                                               id="e_date"
+                                                                                                               name="date_done"
+                                                                                                               t-att-value="s.date_done"
+                                                                                                               readonly="True"/>
+                                                                                                        <span class="input-group-addon add-on">
+                                                                                                            <span class="fa fa-calendar"></span>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <!-- <script>
+                                                                                                    $(document).ready(function()
+                                                                                                    {
+                                                                                                    $('#EnddatePicker')
+                                                                                                    .datepicker({
+                                                                                                    format:
+                                                                                                    'yyyy-mm-dd'
+                                                                                                    })
+                                                                                                    });
+                                                                                                </script> -->
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-4">
+                                                                                                <label for="author">
+                                                                                                    Responsible
+                                                                                                </label>
+                                                                                                <select id="responsable_id"
+                                                                                                        name="responsable_id"
+                                                                                                        class="form-control">
+                                                                                                    <option>
+                                                                                                        <t t-esc="s.responsible_id.name"/>
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="form-group date col-md-4">
+                                                                                                <label for="appdate">
+                                                                                                    Application
+                                                                                                    Date
+                                                                                                </label>
+                                                                                                <div class="date">
+                                                                                                    <div class="input-group input-append date"
+                                                                                                         id="AskdatePicker">
+                                                                                                        <input type="text"
+                                                                                                               class="form-control"
+                                                                                                               id="asked_date"
+                                                                                                               name="asked_done"
+                                                                                                               t-att-value="s.asked_date"
+                                                                                                               readonly="True"/>
+                                                                                                        <span class="input-group-addon add-on">
+                                                                                                            <span class="fa fa-calendar"></span>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <!-- <script>
+                                                                                                    $(document).ready(function()
+                                                                                                    {
+                                                                                                    $('#AskdatePicker')
+                                                                                                    .datepicker({
+                                                                                                    format:
+                                                                                                    'yyyy-mm-dd'
+                                                                                                    })
+                                                                                                    });
+                                                                                                </script> -->
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-4">
+                                                                                                <label for="who">
+                                                                                                    Who
+                                                                                                </label>
+                                                                                                <select id="role2_id"
+                                                                                                        name="role2_id"
+                                                                                                        class="form-control">
+                                                                                                    <option>
+                                                                                                        <t t-esc="s.role_job_id.name"/>
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-4">
+                                                                                                <label for="listener">
+                                                                                                    Listener
+                                                                                                </label>
+                                                                                                <select id="role_id"
+                                                                                                        name="role_id"
+                                                                                                        class="form-control">
+                                                                                                    <option>
+                                                                                                        <t t-esc="s.role_id.name"/>
+                                                                                                    </option>
+                                                                                                </select>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-8">
+                                                                                                <label for="wants">
+                                                                                                    Wants
+                                                                                                </label>
+                                                                                                <textarea
+                                                                                                        name="description"
+                                                                                                        class="form-control"
+                                                                                                        rows="1"
+                                                                                                        readonly="True">
+                                                                                                    <t t-esc="s.description"/>
+                                                                                                </textarea>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-8">
+                                                                                                <label for="for">
+                                                                                                    For
+                                                                                                </label>
+                                                                                                <textarea
+                                                                                                        name="for_then"
+                                                                                                        class="form-control"
+                                                                                                        rows="1"
+                                                                                                        readonly="True">
+                                                                                                    <t t-esc="s.for_then"/>
+                                                                                                </textarea>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-8">
+                                                                                                <label for="acceptance_testing">
+                                                                                                    Proof
+                                                                                                    of
+                                                                                                    acceptance
+                                                                                                </label>
+                                                                                                <textarea
+                                                                                                        name="acceptance_testing"
+                                                                                                        class="form-control"
+                                                                                                        rows="1"
+                                                                                                        readonly="True">
+                                                                                                    <t t-esc="s.acceptance_testing"/>
+                                                                                                </textarea>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="tab-pane"
+                                                                                     t-att-id="'modal_data_sprint_task_general'+str(s.id)">
+                                                                                    <div class="mt32">
+                                                                                        <form class="form-row custom_common_form_class">
+                                                                                            <div class="form-group col-md-3">
+                                                                                                <label for="name">
+                                                                                                    Story
+                                                                                                    Points
+                                                                                                </label>
+                                                                                                <input type="integer"
+                                                                                                       class="form-control"
+                                                                                                       name="complexity"
+                                                                                                       t-att-value="s.complexity"
+                                                                                                       readonly="True"></input>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-3">
+                                                                                                <label for="name">
+                                                                                                    Value
+                                                                                                    for
+                                                                                                    the
+                                                                                                    user
+                                                                                                </label>
+                                                                                                <input type="integer"
+                                                                                                       class="form-control"
+                                                                                                       name="value_to_user"
+                                                                                                       t-att-value="s.value_to_user"
+                                                                                                       readonly="True"></input>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-3">
+                                                                                                <label for="name">
+                                                                                                    Sequence
+                                                                                                </label>
+                                                                                                <input type="integer"
+                                                                                                       class="form-control"
+                                                                                                       name="sequence"
+                                                                                                       t-att-value="s.sequence"
+                                                                                                       readonly="True"></input>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-3">
+                                                                                                <label for="name">
+                                                                                                    Progress
+                                                                                                </label>
+                                                                                                <input type="integer"
+                                                                                                       class="form-control"
+                                                                                                       name="progress"
+                                                                                                       t-att-value="s.progress"
+                                                                                                       readonly="True"></input>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-3">
+                                                                                                <label for="name">
+                                                                                                    Planned
+                                                                                                    Hours
+                                                                                                </label>
+                                                                                                <input type="integer"
+                                                                                                       class="form-control"
+                                                                                                       name="expected_hours"
+                                                                                                       t-att-value="s.expected_hours"
+                                                                                                       readonly="True"></input>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-3">
+                                                                                                <label for="name">
+                                                                                                    Task
+                                                                                                    Hours
+                                                                                                </label>
+                                                                                                <input type="integer"
+                                                                                                       class="form-control"
+                                                                                                       name="task_hours"
+                                                                                                       t-att-value="s.task_hours"
+                                                                                                       readonly="True"></input>
+                                                                                            </div>
+                                                                                            <div class="form-group col-md-3">
+                                                                                                <label for="name">
+                                                                                                    Spent
+                                                                                                    Hours
+                                                                                                </label>
+                                                                                                <input type="integer"
+                                                                                                       class="form-control"
+                                                                                                       name="spent_hours"
+                                                                                                       t-att-value="s.effective_hours"
+                                                                                                       readonly="True"></input>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="tab-pane"
+                                                                                     t-att-id="'modal_data_sprint_task_tasks'+str(s.id)">
+                                                                                    <div class="mt32">
+                                                                                        <table class="table">
+                                                                                            <thead class="thead-dark">
+                                                                                                <tr class="task_tr">
+                                                                                                    <th scope="col">
+                                                                                                        Sequence
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Task
+                                                                                                        Title
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Assigned
+                                                                                                        to
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Initially
+                                                                                                        Planned
+                                                                                                        Hours
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Hours
+                                                                                                        Spent
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Remaining
+                                                                                                        Hours
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Total
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Deadline
+                                                                                                    </th>
+                                                                                                    <th scope="col">
+                                                                                                        Stage
+                                                                                                    </th>
+                                                                                                </tr>
+                                                                                            </thead>
+                                                                                            <tbody>
+                                                                                                <t t-foreach="s.tasks_id"
+                                                                                                   t-as="task">
+                                                                                                    <tr>
+                                                                                                        <th scope="row">
+                                                                                                            <t t-esc="task.sequence"/>
+                                                                                                        </th>
+                                                                                                        <td>
+                                                                                                            <t t-esc="task.name"/>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <t t-esc="task.user_id.name"/>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <t t-esc="task.planned_hours"/>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <t t-esc="task.effective_hours"/>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <t t-esc="task.remaining_hours"/>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <t t-esc="task.date_deadline"/>
+                                                                                                        </td>
+                                                                                                        <td>
+                                                                                                            <t t-esc="task.stage_id.name"/>
+                                                                                                        </td>
+                                                                                                    </tr>
+                                                                                                </t>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="tab-pane"
+                                                                                     t-att-id="'modal_data_sprint_task_notes'+str(s.id)">
+                                                                                    <div class="mt32">
+                                                                                        <textarea
+                                                                                                name="note"
+                                                                                                class="form-control"
+                                                                                                rows="2">
+                                                                                            <t t-esc="s.note"/>
+                                                                                        </textarea>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+                        <!-- Static Modal -->
+                        <div class="modal modal-static fade"
+                             id="processing-modal" role="dialog"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="text-center">
+                                            <i class="fa fa-refresh fa-5x fa-spin"></i>
+                                            <h4>Processing...</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

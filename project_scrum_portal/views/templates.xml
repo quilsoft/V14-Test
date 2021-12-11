@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="sale.portal_my_home_sale" name="Portal My Home: project entries" inherit_id="portal.portal_my_home" priority="20">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <h3 class="page-header">
+                    <span class="fa fa-quote-left mr10" />
+                    <a t-att-href="'/my/quotes'+project_val">Quotations</a>
+                </h3>
+                <h3 class="page-header">
+                    <span class="fa fa-first-order mr10" />
+                    <a t-att-href="'/my/orders'+project_val">Sales Orders</a>
+                </h3>
+            </xpath>
+        </template>
+        <template id="account.portal_my_home_invoice" name="Portal My Home : invoice entries" inherit_id="portal.portal_my_home" priority="30">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <h3 class="page-header">
+                    <span class="fa fa-usd mr10" />
+                    <a t-att-href="'/my/invoices'+project_val">Invoices</a>
+                </h3>
+            </xpath>
+        </template>
+        <template id="portal.portal_breadcrumbs" name="Portal Breadcrumbs">
+            <ol t-if="page_name != 'home'" class="o_portal_submenu breadcrumb mb-0 py-2 flex-grow-1">
+                <li class="breadcrumb-item">
+                    <t t-set="projects" t-value="request.env['project.project'].sudo().search([('privacy_visibility', '=', 'portal')])" />
+                    <t t-if="projects">
+                        <a t-attf-href="/my/home?{{ keep_query(project=projects[0].id) }}" aria-label="Home" title="Home">
+                            <i class="fa fa-home" />
+                        </a>
+                    </t>
+                </li>
+                <li t-if="page_name == 'my_details'" class="breadcrumb-item">Your Details</li>
+            </ol>
+        </template>
+        <template id="project.portal_my_home" name="Portal My Home: project entries" inherit_id="portal.portal_my_home" priority="15">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <h3 style="background-color: #3e3e3e;">
+                    <div class="dropdown select_project">
+                        <input type="hidden" class="project" name="project" value="" />
+                        <t t-if="not project">
+                            <button id="project_filters" class="" type="button" data-toggle="dropdown" style="background: transparent; border: none; padding-left: 0; padding-right: 0; color: #63cdf4;">
+                                <span class="fa fa-check-circle-o mr10" />
+                                <span t-esc="project_filters.get(project, {}).get('label', projects[0].name)" />
+                                <span class="caret"></span>
+                            </button>
+                        </t>
+                        <t t-if="project">
+                            <!-- <t t-set="project" t-value="project_dashbord" /> -->
+                            <button id="project_filters" class="" type="button" data-toggle="dropdown" style="background: transparent; border: none; padding-left: 0; padding-right: 0; color: #63cdf4;">
+                                <span class="fa fa-check-circle-o mr10" />
+                                <span t-esc="project_filters.get(project_dashbord, {}).get('label', project_dashbord.name)" />
+                                <span class="caret"></span>
+                            </button>
+                        </t>
+                        <t t-if="not projects">
+                            <div class="alert alert-info mt16" align="center">
+                                <span>No Project Found.</span>
+                            </div>
+                        </t>
+                        <ul class="dropdown-menu" aria-labelledby="project_filters">
+                            <t t-foreach="project_filters" t-as="option">
+                                <t t-if="project_filters.get(option).get('label')">
+                                    <li t-att-class="project == 'option' and 'active' or 'project'" t-att-value="option">
+                                        <a t-attf-href="/my/home?{{ keep_query('date_begin', 'date_end', 'sortby', project=option) }}">
+                                            <span t-esc="project_filters.get(option).get('label')" />
+                                        </a>
+                                    </li>
+                                </t>
+                            </t>
+                        </ul>
+                    </div>
+                </h3>
+                <h3 class="page-header">
+                    <span class="fa fa-pie-chart mr10" />
+                    <a href="/my/projects">Projects
+                    </a>
+                </h3>
+                <h3 class="page-header">
+                    <span class="fa fa-clipboard mr10" />
+                    <a t-att-href="'/my/tasks'+project_val">Tasks
+                    </a>
+                </h3>
+            </xpath>
+        </template>
+        <template id="portal_my_home" name="Portal My Home: Sprint entries" inherit_id="portal.portal_my_home" priority="18">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <h3 class="page-header">
+                    <span class="fa fa-th-list mr10" />
+                    <a t-att-href="'/my/sprints'+project_val">Sprint Planning
+                    </a>
+                </h3>
+                <h3 class="page-header">
+                    <span class="fa fa-indent mr10" />
+                    <a t-att-href="'/my/backlogs'+project_val">Product
+                        Backlog
+                    </a>
+                </h3>
+                <h3 class="page-header">
+                    <span class="fa fa-calendar mr10" />
+                    <a t-att-href="'/my/meetings'+project_val">Your Meeting</a>
+                </h3>
+            </xpath>
+        </template>
+        <template id="portal.my_account_link" name="Link to frontend portal" inherit_id="portal.user_dropdown">
+            <xpath expr="//a[@id='o_logout']" position="before">
+                <t t-set="projects" t-value="request.env['project.project'].sudo().search([('privacy_visibility', '=', 'portal')])" />
+                <t t-if="projects">
+                    <a t-attf-href="/my/home?{{ keep_query(project=projects[0].id) }}" role="menuitem" class="dropdown-item">My Account
+                        </a>
+                </t>
+            </xpath>
+        </template>
+        <template id="sidebar_form" name="Sidebar Form" inherit_id="portal.portal_layout">
+            <xpath expr="//div[@id='o_my_sidebar']" position="attributes">
+                 <attribute name="class">col-md-12 o_my_sidebar mt16 mb32</attribute>
+            </xpath>
+            <!-- <xpath expr="//div[@id='o_my_sidebar']//div[hasclass('o_my_archives')]" position="replace"></xpath> -->
+            <xpath expr="//div[hasclass('container','mb64')]" position="attributes">
+                <attribute name="class">page_dashboard container-fluid
+                </attribute>
+            </xpath>
+            <xpath expr="//div[@t-attf-class='col-12 col-md col-lg-6']" position="attributes">
+                <attribute name="t-attf-class">col-md-12</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_portal', 'container', 'mt-3')]" position="attributes">
+                <attribute name="class">container</attribute>
+            </xpath>
+        </template>
+        <template id="my_home_page" name="My Home Page" inherit_id="portal.portal_my_home">
+            <xpath expr="//div[hasclass('o_portal_my_home')]" position="attributes">
+                <attribute name="class">o_portal_my_home sidebar-inner-wrapper
+                col-md-3
+            </attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('o_portal_my_home')]/h3" position="replace">
+                <h3 class="d-none">Your Documents</h3>
+            </xpath>
+        </template>
+        <template id="project_portel" name="My Projects" inherit_id="project.portal_my_project" customize_show="True">
+            <xpath expr="//t[@t-call='portal.portal_layout']" position="after">
+                <div class="oe_structure">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <ol class="breadcrumb mt8">
+                                <li>
+                                    <a href="/my/home">
+                                        <i class="fa fa-home" />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a t-attf-href="/my/projects?#{keep_query()}">
+                                        My Projects
+                                    </a>
+                                </li>
+                                <li>
+                                    <span t-field="project.name" />
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <template id="task_portel" name="My Task" inherit_id="project.portal_my_task" customize_show="True">
+            <xpath expr="//t[@t-call='portal.portal_layout']" position="after">
+                <div class="oe_structure">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb mt8">
+                                <li>
+                                    <a href="/my/home">
+                                        <i class="fa fa-home" />
+                                    </a>
+                                </li>
+                                <li>
+                                    <a t-attf-href="/my/tasks?#{keep_query()}">
+                                        My Tasks
+                                    </a>
+                                </li>
+                                <li>
+                                    <span t-field="task.name" />
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <template id="append_dashboard_content" name="Append DB Content" inherit_id="portal.portal_my_home">
+            <xpath expr="//div[@id='oe_structure_portal_my_home_2']" position="replace">
+                <div class="col-md-9 box_align oe_structure">
+                    <section class="mt32 mb32">
+                        <div class="" style="background:#fff;">
+                            <div class="row">
+                                <section class="container">
+                                    <div class="">
+                                        <div class="col-md-12">
+                                            <header class="mt16 mb16" style="font-size: 18px; color: black; border-bottom: 1px solid lightgray;">
+                                                <span class="fa fa-sitemap mr10" />
+                                                <label>Project Team</label>
+                                            </header>
+                                            <t t-if="not projects">
+                                                <div class="alert alert-warning mt8" role="alert">
+                                                    No data found !
+                                                </div>
+                                            </t>
+                                            <div class="container">
+                                                <div class="row blog">
+                                                    <div class="col-md-12 mt16 mb64">
+                                                        <div id="blogCarousel" class="carousel slide" data-ride="carousel">
+                                                            <ol class="carousel-indicators">
+                                                                <li data-target="#blogCarousel" data-slide-to="0" class="active"></li>
+                                                                <li data-target="#blogCarousel" data-slide-to="1"></li>
+                                                            </ol>
+                                                            <div class="carousel-inner text-center">
+                                                                <div class="carousel-item active">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4">
+                                                                            <t t-set="owner" t-value="request.env['res.users'].sudo().browse(project_dashbord.product_owner_id.id)" />
+                                                                            <img style="width: 100px;height: 100px;border-radius: 50%;" t-attf-src="/website/image/res.users/#{owner.id}/image_1920#{''}" />
+                                                                            <div class="at-user__name">
+                                                                                <t t-esc="owner.name" />
+                                                                            </div>
+                                                                            <div class="at-user__title">
+                                                                                Product Owner
+                                                                            </div>
+                                                                            <div class="at-user__title mt16">
+                                                                                <t t-esc="owner.phone" />
+                                                                            </div>
+                                                                            <div class="at-user__title">
+                                                                                <t t-esc="owner.email" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <t t-set="master" t-value="request.env['res.users'].sudo().browse(project_dashbord.scrum_master_id.id)" />
+                                                                            <img style="width: 100px;height: 100px;border-radius: 50%;" t-attf-src="/website/image/res.users/#{master.id}/image_1920#{''}" />
+                                                                            <div class="at-user__name">
+                                                                                <t t-esc="master.name" />
+                                                                            </div>
+                                                                            <div class="at-user__title">
+                                                                                Scrum Master
+                                                                            </div>
+                                                                            <div class="at-user__title mt16">
+                                                                                <t t-esc="master.phone" />
+                                                                            </div>
+                                                                            <div class="at-user__title">
+                                                                                <t t-esc="master.email" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <img style="width: 100px;height: 100px;border-radius: 50%;" src="/project_scrum_portal/static/src/img/team.png" />
+                                                                            <div class="at-user__name">
+                                                                                <t t-esc="project_dashbord.team_id.name" />
+                                                                            </div>
+                                                                            <div class="at-user__title">
+                                                                                Team
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="carousel-item" style="min-heigh:auto !important;">
+                                                                    <div class="row">
+                                                                        <t t-foreach="project_dashbord" t-as="p">
+                                                                            <t t-foreach="p.team_id.developer_ids" t-as="d">
+                                                                                <div class="col-md-4">
+                                                                                    <t t-set="team" t-value="request.env['res.users'].sudo().browse(d.id)" />
+                                                                                    <img style="width: 100px;height: 100px;border-radius: 50%;" t-attf-src="/website/image/res.users/#{team.id}/image_1920#{''}" />
+                                                                                    <div class="at-user__name">
+                                                                                        <t t-esc="d.name" />
+                                                                                    </div>
+                                                                                    <div class="at-user__title">
+                                                                                        Team Member
+                                                                                    </div>
+                                                                                    <div class="at-user__title mt16">
+                                                                                        <t t-esc="d.phone" />
+                                                                                    </div>
+                                                                                    <div class="at-user__title">
+                                                                                        <t t-esc="d.email" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </t>
+                                                                        </t>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="mt32 mb32">
+                        <div class="container" style="background:#fff;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <header class="mt16 mb16" style="font-size: 18px; color: black; border-bottom: 1px solid lightgray;">
+                                        <span class="fa fa-line-chart mr10" />
+                                        <label>Burndown Charts -
+                                            <small>Remaining points vs Hours left
+                                            </small></label>
+                                    </header>
+                                    <div class="center-block mb32" style="height: auto;">
+                                        <t t-set="sprints" t-value="request.env['project.scrum.sprint'].sudo().search([('project_id.id','=',request.params.get('project'))])" />
+                                        <div class="form-group">
+                                            <t t-if="not sprints">
+                                                <div class="alert alert-warning mt8" role="alert">
+                                                    No data found !
+                                                </div>
+                                            </t>
+                                            <t t-if="sprints">
+                                                <select id="sprint_id" name="sprint_id" class="sprint_select_box col-md-6">
+                                                    <option class="default_option" label="Select Sprint" default="default" selected="selected" />
+                                                    <t t-foreach="sprints" t-as="r">
+                                                        <option t-att-value="r.id">
+                                                            <t t-esc="r.name" />
+                                                            -
+                                                            <t t-esc="r.date_start" />
+                                                            to
+                                                            <t t-esc="r.date_stop" />
+                                                            -
+                                                            <span t-field="r.state" /></option>
+                                                    </t>
+                                                </select>
+                                                <div id="" class="container-fluid">
+                                                    <ul style="margin-top: -89px; padding-left: 294px;" class="nav nav-pills col-md-6 pull-right ul_small_btn">
+                                                        <li class="pull-right">
+                                                            <a href="#burndown_bar" data-toggle="tab">
+                                                                <span class="fa fa-bar-chart"></span>
+                                                            </a>
+                                                        </li>
+                                                        <li class="pull-right" style="padding-left: 10px;padding-right: 10px;">
+                                                            <a href="#burndown_pie" data-toggle="tab">
+                                                                <span class="fa fa-pie-chart"></span>
+                                                            </a>
+                                                        </li>
+                                                        <li class="active pull-right">
+                                                            <a href="#burndown_line" data-toggle="tab">
+                                                                <span class="fa fa-line-chart"></span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="tab-content clearfix cust_tab_sec">
+                                                        <div class="tab-pane active" id="burndown_line">
+                                                            <div class="mt64">
+                                                                <label>Line
+                                                                    Chart
+                                                                </label>
+                                                                <input class="sprints" type="hidden" name="sprint_id" t-att-value="default_sprints" />
+                                                                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane" id="burndown_pie">
+                                                            <div class="mt64">
+                                                                <label>Pie
+                                                                    Chart
+                                                                </label>
+                                                                <div class="mt32 mb32" id="chartContainer1" style="height: 370px; width: 100%;"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane" id="burndown_bar">
+                                                            <div class="mt64">
+                                                                <label>Bar
+                                                                    Chart
+                                                                </label>
+                                                                <div class="mt32 mb32" id="chartContainer2" style="height: 370px; width: 100%;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="mt32 mb32">
+                        <div class="container" style="background:#fff;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <header class="mt16 mb16" style="font-size: 18px; color: black; border-bottom: 1px solid lightgray;">
+                                        <span class="fa fa-clipboard mr10" />
+                                        <label>Tasks Stage -
+                                            <small>List of Tasks in stages</small></label>
+                                    </header>
+                                    <div class="center-block mb32" style="height: auto;">
+                                        <div id="" class="container-fluid">
+                                            <t t-if="not project">
+                                                <div class="alert alert-warning mt8" role="alert">
+                                                    No data found !
+                                                </div>
+                                            </t>
+                                            <t t-if="project">
+                                                <ul style="padding-left: 294px;" class="nav nav-pills col-md-6 pull-right ul_small_btn">
+                                                    <!-- <li class="pull-right task_stage_pie_btn">
+                                                        <a href="#task_stage_pie" data-toggle="tab">
+                                                            <span class="fa fa-pie-chart"></span>
+                                                        </a>
+                                                    </li> -->
+                                                    <li class="active pull-right task_stage_bar_btn" style="padding-left: 10px;">
+                                                        <a href="#task_stage_bar" data-toggle="tab">
+                                                            <span class="fa fa-bar-chart"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content clearfix cust_tab_sec">
+                                                    <div class="tab-pane active" id="task_stage_bar">
+                                                        <label>Bar Chart
+                                                        </label>
+                                                        <div class="mt16">
+                                                            <input class="task_id" type="hidden" name="task_id" t-att-value="project_dashbord.id" />
+                                                            <div id="task_stage_bar_chart"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane" id="task_stage_pie">
+                                                        <label>Pie Chart
+                                                        </label>
+                                                        <div class="mt64">
+                                                            <input class="task_id" type="hidden" name="task_id" t-att-value="project_dashbord.id" />
+                                                            <div id="task_stage_pie_chart"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="mt32 mb32">
+                        <div class="container" style="background:#fff;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <header class="mt16 mb16" style="font-size: 18px; color: black; border-bottom: 1px solid lightgray;">
+                                        <span class="fa fa-file-text mr10" />
+                                        <label>Sprint Hours -
+                                            <small>Estimated vs Spent hours</small></label>
+                                    </header>
+                                    <div class="center-block mb32" style="height: auto;">
+                                        <div id="" class="container-fluid">
+                                            <t t-if="not project">
+                                                <div class="alert alert-warning mt8" role="alert">
+                                                    No data found !
+                                                </div>
+                                            </t>
+                                            <t t-if="project">
+                                                <ul style="padding-left: 294px;" class="nav nav-pills col-md-6 pull-right ul_small_btn">
+                                                    <li class="active pull-right sprint_hours_bar_chart_btn">
+                                                        <a href="#sprint_hours_bar" data-toggle="tab">
+                                                            <span class="fa fa-bar-chart"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content clearfix cust_tab_sec">
+                                                    <div class="tab-pane active" id="sprint_hours_bar">
+                                                        <label>Bar Chart
+                                                        </label>
+                                                        <div class="mt16">
+                                                            <input class="sprint_wise_id" type="hidden" name="sprint_wise_id" t-att-value="project_dashbord.id" />
+                                                            <div id="sprint_hours_bar_chart"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="mt32 mb32">
+                        <div class="container" style="background:#fff;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <header class="mt16 mb16" style="font-size: 18px; color: black; border-bottom: 1px solid lightgray;">
+                                        <span class="fa fa-file-text mr10" />
+                                        <label>Team workload -
+                                            <small>Member's workload hours</small></label>
+                                    </header>
+                                    <div class="center-block mb32" style="height: auto;">
+                                        <div id="" class="container-fluid">
+                                            <t t-if="not project">
+                                                <div class="alert alert-warning mt8" role="alert">
+                                                    No data found !
+                                                </div>
+                                            </t>
+                                            <t t-if="project">
+                                                <ul style="padding-left: 294px;" class="nav nav-pills col-md-6 pull-right ul_small_btn">
+                                                    <!-- <li class="pull-right team_load_pie_btn">
+                                                        <a href="#team_load_pie" data-toggle="tab">
+                                                            <span class="fa fa-pie-chart"></span>
+                                                        </a>
+                                                    </li> -->
+                                                    <li class="active pull-right team_load_bar_btn" style="padding-left: 10px;">
+                                                        <a href="#team_load_bar" data-toggle="tab">
+                                                            <span class="fa fa-bar-chart"></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div class="tab-content clearfix cust_tab_sec">
+                                                    <div class="tab-pane active" id="team_load_bar">
+                                                        <label>Bar Chart
+                                                        </label>
+                                                        <div class="mt16">
+                                                            <input class="team_wise_id" type="hidden" name="team_wise_id" t-att-value="project_dashbord.id" />
+                                                            <div id="team_load_bar_chart"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane" id="team_load_pie">
+                                                        <label>Pie Chart
+                                                        </label>
+                                                        <div class="mt64">
+                                                            <input class="team_wise_id" type="hidden" name="team_wise_id" t-att-value="project_dashbord.id" />
+                                                            <div id="team_load_pie_chart"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

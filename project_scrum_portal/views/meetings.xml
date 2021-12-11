@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="my_meetings" name="My Meetings">
+            <t t-call="website.layout">
+                <div id="wrap" class="o_portal_wrap" style="background: #e8ebef;">
+                    <div class="container-fluid">
+                        <nav class="navbar navbar-light navbar-expand-lg border py-0 mb-2 o_portal_navbar  mt-3 rounded">
+                            <ol class="o_portal_submenu breadcrumb mb-0 py-2 flex-grow-1" style="background:#ffffff;">
+                                <li class="breadcrumb-item">
+                                    <a t-att-href="'/my/home'+project_val">
+                                        <i class="fa fa-home"/>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">My Meetings</li>
+                            </ol>
+                        </nav>
+                        <t t-if="not meeting_dates">
+                            <div class="alert alert-warning mt32" role="alert">
+                                No data found !
+                            </div>
+                        </t>
+                        <t t-if="meeting_dates">
+                            <ul class="timeline col-md-12 mt32">
+
+                                <t t-foreach="meeting_dates" t-as="d">
+                                    <li>
+                                        <div class="tldate">
+                                            <span t-esc="d.get('meeting_date')"/>
+                                        </div>
+                                    </li>
+                                    <t t-set="meeting"
+                                       t-value="request.env['project.scrum.meeting'].sudo().search([('id','=',d.get('meeting_id'))])"/>
+                                    <t t-foreach="meeting" t-as="s">
+                                        <li class="">
+                                            <div class="tl-circ"></div>
+                                            <div class="timeline-panel">
+                                                <div class="tl-heading">
+                                                    <h4>
+                                                        <strong>
+                                                            <a data-toggle="modal"
+                                                               t-att-href="'#modal_meeting'+str(s.id)"
+                                                               t-field="s.name"/>
+                                                        </strong>
+                                                    </h4>
+                                                    <p class="mt8">
+                                                        <t t-if="not s.allday==True and s.start">
+                                                            <span t-esc="datetime.datetime.strftime(datetime.datetime.strptime(str(s.start),'%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S: %p')"/>
+                                                        </t>
+                                                        <t t-if="s.allday==True and s.start_date">
+                                                            <span>All Day - </span>
+                                                            <span t-esc="datetime.datetime.strftime(datetime.datetime.strptime(str(s.start_date),'%Y-%m-%d'), '%Y-%m-%d %I:%M %p')"/>
+                                                        </t>
+                                                    </p>
+                                                </div>
+                                                <div class="tl-body"></div>
+                                            </div>
+                                        </li>
+                                        <div class="modal modal_meetings right fade"
+                                             t-att-id="'modal_meeting'+str(s.id)"
+                                             tabindex="-1" role="dialog">
+                                            <div class="modal-dialog"
+                                                 role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button"
+                                                                class="close"
+                                                                data-dismiss="modal"
+                                                                aria-label="Close">
+                                                            <span class="fa fa-times-circle"></span>
+                                                        </button>
+                                                        <h4 class="modal-title"
+                                                            id="myModalLabel2">
+                                                            <span t-field="s.name"/>
+                                                        </h4>
+                                                    </div>
+                                                    <div class="modal-body"
+                                                         style="background: #e8ebef;">
+                                                        <div id="exTab1"
+                                                             class="container-fluid">
+                                                            <ul class="nav nav-pills">
+                                                                <li class="zero_mr_timeline_li">
+                                                                    <a style="position: relative;display: block;padding: 10px 15px;" t-att-href="'#modal_meeting_details'+str(s.id)"
+                                                                       data-toggle="tab">
+                                                                        Details
+                                                                    </a>
+                                                                </li>
+                                                                <li class="zero_mr_timeline_li">
+                                                                    <a style="position: relative;display: block;padding: 10px 15px;" t-att-href="'#modal_reunion_summ'+str(s.id)"
+                                                                       data-toggle="tab">
+                                                                        Reunion
+                                                                        Summary
+                                                                    </a>
+                                                                </li>
+                                                                <li class="zero_mr_timeline_li">
+                                                                    <a style="position: relative;display: block;padding: 10px 15px;" t-att-href="'#modal_meeting_attendees'+str(s.id)"
+                                                                       data-toggle="tab">
+                                                                        Attendees 
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                            <div class="tab-content clearfix">
+                                                                <div class="tab-pane active"
+                                                                     t-att-id="'modal_meeting_details'+str(s.id)">
+                                                                    <div class="mt32">
+                                                                        <div class="mt32 custom_common_form_class">
+                                                                            <div class="form-group">
+                                                                                <label for="project">
+                                                                                    Project
+                                                                                </label>
+                                                                                <input type="text"
+                                                                                       class="form-control"
+                                                                                       name="project_id"
+                                                                                       t-att-value="s.project_id.name"
+                                                                                       readonly="True"></input>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="sprint">
+                                                                                    Sprint
+                                                                                </label>
+                                                                                <input type="text"
+                                                                                       class="form-control"
+                                                                                       name="question_yesterday"
+                                                                                       t-att-value="s.sprint_id.name"
+                                                                                       readonly="True"></input>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="sprint">
+                                                                                    Responsible
+                                                                                </label>
+                                                                                <input type="text"
+                                                                                       class="form-control"
+                                                                                       name="user_id"
+                                                                                       t-att-value="s.user_id.name"
+                                                                                       readonly="True"></input>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label for="sprint">
+                                                                                    Location
+                                                                                </label>
+                                                                                <input type="text"
+                                                                                       class="form-control"
+                                                                                       name="user_id"
+                                                                                       t-att-value="s.location"
+                                                                                       readonly="True"></input>
+                                                                            </div>
+                                                                            <t t-if="s.allday==True">
+                                                                                <div class="form-group">
+                                                                                    <label for="sprint">
+                                                                                        Start
+                                                                                    </label>
+                                                                                    <input type="text"
+                                                                                           class="form-control"
+                                                                                           name="start_date"
+                                                                                           t-att-value="s.start_date"
+                                                                                           readonly="True"></input>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label for="sprint">
+                                                                                        Stop
+                                                                                    </label>
+                                                                                    <input type="text"
+                                                                                           class="form-control"
+                                                                                           name="stop_date"
+                                                                                           t-att-value="s.stop_date"
+                                                                                           readonly="True"></input>
+                                                                                </div>
+                                                                            </t>
+                                                                            <t t-if="not s.allday==True">
+                                                                                <div class="form-group">
+                                                                                    <label for="sprint">
+                                                                                        Start
+                                                                                    </label>
+                                                                                    <input type="text"
+                                                                                           class="form-control"
+                                                                                           name="start_datetime"
+                                                                                           t-att-value="s.start_date"
+                                                                                           readonly="True"></input>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label for="sprint">
+                                                                                        Stop
+                                                                                    </label>
+                                                                                    <input type="text"
+                                                                                           class="form-control"
+                                                                                           name="start_datetime"
+                                                                                           t-att-value="s.stop"
+                                                                                           readonly="True"></input>
+                                                                                </div>
+                                                                            </t>
+                                                                            <div class="form-group">
+                                                                                <label for="sprint">
+                                                                                    Duration
+                                                                                </label>
+                                                                                <input type="text"
+                                                                                       class="form-control"
+                                                                                       name="start_datetime"
+                                                                                       t-att-value="s.duration"
+                                                                                       readonly="True"></input>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="tab-pane"
+                                                                     t-att-id="'modal_reunion_summ'+str(s.id)">
+                                                                    <div class="mt32 custom_common_form_class">
+                                                                        <div class="form-group">
+                                                                            <label for="name">
+                                                                                What
+                                                                                happened
+                                                                                during
+                                                                                the
+                                                                                meeting?
+                                                                            </label>
+                                                                            <textarea
+                                                                                    type="text"
+                                                                                    class="form-control"
+                                                                                    name="what_we_did"
+                                                                                    readonly="True">
+                                                                                <t t-esc="s.what_we_did"/>
+                                                                            </textarea>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="name">
+                                                                                What
+                                                                                was
+                                                                                done
+                                                                                since
+                                                                                the
+                                                                                last
+                                                                                meeting?
+                                                                            </label>
+                                                                            <textarea
+                                                                                    type="text"
+                                                                                    class="form-control"
+                                                                                    name="question_yesterday"
+                                                                                    t-att-value="s.question_yesterday"
+                                                                                    readonly="True">
+                                                                                <t t-esc="s.question_yesterday"/>
+                                                                            </textarea>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="name">
+                                                                                What
+                                                                                is
+                                                                                planned
+                                                                                until
+                                                                                the
+                                                                                next
+                                                                                meeting?
+                                                                            </label>
+                                                                            <textarea
+                                                                                    type="text"
+                                                                                    class="form-control"
+                                                                                    name="question_today"
+                                                                                    t-att-value="s.question_today"
+                                                                                    readonly="True">
+                                                                                <t t-esc="s.question_today"/>
+                                                                            </textarea>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="name">
+                                                                                There
+                                                                                is
+                                                                                something
+                                                                                that
+                                                                                is
+                                                                                blocking?
+                                                                            </label>
+                                                                            <textarea
+                                                                                    type="text"
+                                                                                    class="form-control"
+                                                                                    name="question_blocks"
+                                                                                    t-att-value="s.question_blocks"
+                                                                                    readonly="True">
+                                                                                <t t-esc="s.question_blocks"/>
+                                                                            </textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="tab-pane"
+                                                                     t-att-id="'modal_meeting_attendees'+str(s.id)">
+                                                                    <div class="mt32">
+                                                                        <div class="form-group">
+                                                                            <div>
+                                                                                <p class="post-meta text-muted">
+                                                                                    <t t-foreach="s.partner_ids"
+                                                                                       t-as="one_attendees">
+                                                                                        <a class="badge"
+                                                                                           t-esc="one_attendees.name"/>
+                                                                                    </t>
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </ul>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
